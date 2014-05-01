@@ -1216,6 +1216,21 @@ AS_HELP_STRING([--enable-sndio-shared], [dynamically load sndio audio support [[
     fi
 }
 
+CheckFBDEV()
+{
+	if test x$ARCH = xlinux -a x$enable_video = xyes; then
+		AC_ARG_ENABLE(video-fbdev,
+					  AC_HELP_STRING([--enable-video-fbdev],
+									 [Enable the framebuffer video backend [[default=yes]]]
+									 ),, enable_video_fbdev=yes)
+		if test x$enable_video_fbdev = xyes; then
+			have_video=yes
+			SUMMARY_video="${SUMMARY_video} fbdev"
+			AC_DEFINE(SDL_VIDEO_DRIVER_FBDEV, 1, [ ])
+		fi
+	fi
+}
+
 dnl Find FusionSound
 CheckFusionSound()
 {
@@ -3556,6 +3571,7 @@ case "$host" in
         CheckX11
         CheckDirectFB
         CheckKMSDRM
+        CheckFBDEV
         CheckOpenGLX11
         CheckOpenGLESX11
         CheckVulkan
@@ -3718,6 +3734,11 @@ case "$host" in
             SOURCES="$SOURCES $srcdir/src/core/linux/SDL_evdev.c"
             SOURCES="$SOURCES $srcdir/src/core/linux/SDL_evdev_kbd.c"
             SOURCES="$SOURCES $srcdir/src/core/freebsd/SDL_evdev_kbd_freebsd.c"
+        fi       
+        # Set up files for the fbdev video driver
+        if test x$enable_video_fbdev = xyes; then
+            SOURCES="$SOURCES $srcdir/src/video/fbdev/*.c"
+            $as_echo "#define SDL_VIDEO_DRIVER_FB 1" >>confdefs.h
         fi
         # Set up other core UNIX files
         SOURCES="$SOURCES $srcdir/src/core/linux/SDL_evdev_capabilities.c"

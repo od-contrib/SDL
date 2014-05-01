@@ -440,6 +440,10 @@ extern VideoBootStrap OFFSCREEN_bootstrap;
 extern VideoBootStrap OS2DIVE_bootstrap;
 extern VideoBootStrap OS2VMAN_bootstrap;
 
+#if SDL_VIDEO_DRIVER_FBDEV
+extern VideoBootStrap FBDEV_bootstrap;
+#endif
+
 extern SDL_VideoDevice *SDL_GetVideoDevice(void);
 extern int SDL_AddBasicVideoDisplay(const SDL_DisplayMode * desktop_mode);
 extern int SDL_AddVideoDisplay(const SDL_VideoDisplay * display, SDL_bool send_event);

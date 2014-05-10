@@ -31,6 +31,8 @@
 
 #include "SDL_fbvideo.h"
 #include "SDL_fbopengles.h"
+#include "../../events/SDL_mouse_c.h"
+#include "../../events/SDL_keyboard_c.h"
 
 static int
 FB_Available(void)
@@ -187,6 +189,10 @@ FB_CreateWindow(_THIS, SDL_Window * window)
 
     /* Setup driver data for this window */
     window->driverdata = wdata;
+
+    /* One window, it always has focus */
+    SDL_SetMouseFocus(window);
+    SDL_SetKeyboardFocus(window);
 
     /* Window has been successfully created */
     return 0;

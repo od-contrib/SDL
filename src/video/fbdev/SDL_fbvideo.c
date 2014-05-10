@@ -29,6 +29,10 @@
 #include "SDL_loadso.h"
 #include "SDL_events.h"
 
+#ifdef SDL_INPUT_LINUXEV
+#include "../../core/linux/SDL_evdev.h"
+#endif
+
 #include "SDL_fbvideo.h"
 #include "SDL_fbopengles.h"
 #include "../../events/SDL_mouse_c.h"
@@ -43,6 +47,9 @@ FB_Available(void)
 static void
 FB_PumpEvents(_THIS)
 {
+#ifdef SDL_INPUT_LINUXEV
+    SDL_EVDEV_Poll();
+#endif
 }
 
 static void
@@ -135,12 +142,20 @@ FB_VideoInit(_THIS)
     display.current_mode = current_mode;
 
     SDL_AddVideoDisplay(&display);
+
+#ifdef SDL_INPUT_LINUXEV
+    SDL_EVDEV_Init();
+#endif
+
     return 1;
 }
 
 void
 FB_VideoQuit(_THIS)
 {
+#ifdef SDL_INPUT_LINUXEV
+    SDL_EVDEV_Quit();
+#endif
 }
 
 void

@@ -395,6 +395,9 @@ static int SDL_EVDEV_mute_keyboard(int tty, int *kb_mode)
     if (ioctl(tty, KDSKBMUTE, 1) && ioctl(tty, KDSKBMODE, K_OFF)) {
         return SDL_SetError("EVDEV: Failed muting keyboard");
     }
+    if ( ioctl(tty, KDSETMODE, KD_GRAPHICS) < 0 ) {
+        return SDL_SetError("EVDEV: Failed to enable graphics mode");
+    }
     
     return 0;  
 }
@@ -402,6 +405,10 @@ static int SDL_EVDEV_mute_keyboard(int tty, int *kb_mode)
 /* Restore the keyboard mode for given tty */
 static void SDL_EVDEV_unmute_keyboard(int tty, int kb_mode)
 {
+    if ( ioctl(tty, KDSETMODE, KD_TEXT) ) {
+        SDL_Log("EVDEV: Failed to restore text mode");
+    }
+
     if (ioctl(tty, KDSKBMUTE, 0) && ioctl(tty, KDSKBMODE, kb_mode)) {
         SDL_Log("EVDEV: Failed restoring keyboard mode");
     }

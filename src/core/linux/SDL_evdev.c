@@ -396,12 +396,6 @@ SDL_EVDEV_translate_keycode(int keycode)
     if (keycode < SDL_arraysize(linux_scancode_table))
         scancode = linux_scancode_table[keycode];
 
-    if (scancode == SDL_SCANCODE_UNKNOWN) {
-        SDL_Log("The key you just pressed is not recognized by SDL. To help "
-            "get this fixed, please report this to the SDL forums/mailing list "
-            "<https://discourse.libsdl.org/> EVDEV KeyCode %d", keycode);
-    }
-
     return scancode;
 }
 

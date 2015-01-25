@@ -663,18 +663,6 @@ SDL_EVDEV_Poll(void)
                         }
                     }
                     break;
-                case EV_ABS:
-                    switch(events[i].code) {
-                    case ABS_X:
-                        SDL_SendMouseMotion(mouse->focus, mouse->mouseID, SDL_FALSE, events[i].value, mouse->y);
-                        break;
-                    case ABS_Y:
-                        SDL_SendMouseMotion(mouse->focus, mouse->mouseID, SDL_FALSE, mouse->x, events[i].value);
-                        break;
-                    default:
-                        break;
-                    }
-                    break;
                 case EV_REL:
                     switch(events[i].code) {
                     case REL_X:

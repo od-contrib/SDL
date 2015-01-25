@@ -274,53 +274,6 @@ SDL_EVDEV_Poll(void)
                     }
                     SDL_EVDEV_kbd_keycode(_this->kbd, events[i].code, events[i].value);
                     break;
-                case EV_ABS:
-                    switch(events[i].code) {
-                    case ABS_MT_SLOT:
-                        if (!item->is_touchscreen) /* FIXME: temp hack */
-                            break;
-                        item->touchscreen_data->current_slot = events[i].value;
-                        break;
-                    case ABS_MT_TRACKING_ID:
-                        if (!item->is_touchscreen) /* FIXME: temp hack */
-                            break;
-                        if (events[i].value >= 0) {
-                            item->touchscreen_data->slots[item->touchscreen_data->current_slot].tracking_id = events[i].value;
-                            item->touchscreen_data->slots[item->touchscreen_data->current_slot].delta = EVDEV_TOUCH_SLOTDELTA_DOWN;
-                        } else {
-                            item->touchscreen_data->slots[item->touchscreen_data->current_slot].delta = EVDEV_TOUCH_SLOTDELTA_UP;
-                        }
-                        break;
-                    case ABS_MT_POSITION_X:
-                        if (!item->is_touchscreen) /* FIXME: temp hack */
-                            break;
-                        item->touchscreen_data->slots[item->touchscreen_data->current_slot].x = events[i].value;
-                        if (item->touchscreen_data->slots[item->touchscreen_data->current_slot].delta == EVDEV_TOUCH_SLOTDELTA_NONE) {
-                            item->touchscreen_data->slots[item->touchscreen_data->current_slot].delta = EVDEV_TOUCH_SLOTDELTA_MOVE;
-                        }
-                        break;
-                    case ABS_MT_POSITION_Y:
-                        if (!item->is_touchscreen) /* FIXME: temp hack */
-                            break;
-                        item->touchscreen_data->slots[item->touchscreen_data->current_slot].y = events[i].value;
-                        if (item->touchscreen_data->slots[item->touchscreen_data->current_slot].delta == EVDEV_TOUCH_SLOTDELTA_NONE) {
-                            item->touchscreen_data->slots[item->touchscreen_data->current_slot].delta = EVDEV_TOUCH_SLOTDELTA_MOVE;
-                        }
-                        break;
-                    case ABS_X:
-                        if (item->is_touchscreen) /* FIXME: temp hack */
-                            break;
-                        SDL_SendMouseMotion(mouse->focus, mouse->mouseID, SDL_FALSE, events[i].value, mouse->y);
-                        break;
-                    case ABS_Y:
-                        if (item->is_touchscreen) /* FIXME: temp hack */
-                            break;
-                        SDL_SendMouseMotion(mouse->focus, mouse->mouseID, SDL_FALSE, mouse->x, events[i].value);
-                        break;
-                    default:
-                        break;
-                    }
-                    break;
                 case EV_REL:
                     switch(events[i].code) {
                     case REL_X:

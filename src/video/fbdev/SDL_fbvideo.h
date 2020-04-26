@@ -74,7 +74,7 @@ SDL_GLContext FB_GLES_CreateContext(_THIS, SDL_Window * window);
 int FB_GLES_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext context);
 int FB_GLES_SetSwapInterval(_THIS, int interval);
 int FB_GLES_GetSwapInterval(_THIS);
-void FB_GLES_SwapWindow(_THIS, SDL_Window * window);
+int FB_GLES_SwapWindow(_THIS, SDL_Window * window);
 void FB_GLES_DeleteContext(_THIS, SDL_GLContext context);
 
 #endif /* __SDL_FBVIDEO_H__ */

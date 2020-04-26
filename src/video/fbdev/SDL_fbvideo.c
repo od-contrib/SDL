@@ -38,12 +38,6 @@
 #include "../../events/SDL_mouse_c.h"
 #include "../../events/SDL_keyboard_c.h"
 
-static int
-FB_Available(void)
-{
-    return 1;
-}
-
 static void
 FB_PumpEvents(_THIS)
 {
@@ -83,8 +77,8 @@ FB_Create()
     device->VideoQuit = FB_VideoQuit;
     device->GetDisplayModes = FB_GetDisplayModes;
     device->SetDisplayMode = FB_SetDisplayMode;
-    device->CreateWindow = FB_CreateWindow;
-    device->CreateWindowFrom = FB_CreateWindowFrom;
+    device->CreateSDLWindow = FB_CreateWindow;
+    device->CreateSDLWindowFrom = FB_CreateWindowFrom;
     device->SetWindowTitle = FB_SetWindowTitle;
     device->SetWindowIcon = FB_SetWindowIcon;
     device->SetWindowPosition = FB_SetWindowPosition;
@@ -116,7 +110,6 @@ FB_Create()
 VideoBootStrap FBDEV_bootstrap = {
     "fbdev",
     "Linux Framebuffer Video Driver",
-    FB_Available,
     FB_Create
 };
 
@@ -141,13 +134,17 @@ FB_VideoInit(_THIS)
     display.desktop_mode = current_mode;
     display.current_mode = current_mode;
 
-    SDL_AddVideoDisplay(&display);
+    if (SDL_AddVideoDisplay(&display, SDL_FALSE) < 0) {
+        return -1;
+    }
 
 #ifdef SDL_INPUT_LINUXEV
-    SDL_EVDEV_Init();
+    if (SDL_EVDEV_Init() < 0) {
+        return -1;
+    }
 #endif
 
-    return 1;
+    return 0;
 }
 
 void

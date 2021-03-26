@@ -575,3 +575,6 @@
 #define SDL_GetDefaultAssertionHandler SDL_GetDefaultAssertionHandler_REAL
 #define SDL_GetAssertionHandler SDL_GetAssertionHandler_REAL
 #define SDL_DXGIGetOutputInfo SDL_DXGIGetOutputInfo_REAL
+
+/* Backport from SDL 2.0.6 */
+#define SDL_LoadFile_RW SDL_LoadFile_RW_REAL

@@ -768,6 +768,7 @@ infodir
 docdir
 oldincludedir
 includedir
+runstatedir
 localstatedir
 sharedstatedir
 sysconfdir
@@ -845,6 +846,7 @@ enable_nas
 enable_nas_shared
 enable_sndio
 enable_sndio_shared
+enable_video_fbdev
 enable_fusionsound
 enable_fusionsound_shared
 enable_diskaudio
@@ -978,6 +980,7 @@ datadir='${datarootdir}'
 sysconfdir='${prefix}/etc'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
+runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 docdir='${datarootdir}/doc/${PACKAGE}'
@@ -1230,6 +1233,15 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
+  -runstatedir | --runstatedir | --runstatedi | --runstated \
+  | --runstate | --runstat | --runsta | --runst | --runs \
+  | --run | --ru | --r)
+    ac_prev=runstatedir ;;
+  -runstatedir=* | --runstatedir=* | --runstatedi=* | --runstated=* \
+  | --runstate=* | --runstat=* | --runsta=* | --runst=* | --runs=* \
+  | --run=* | --ru=* | --r=*)
+    runstatedir=$ac_optarg ;;
+
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
@@ -1367,7 +1379,7 @@ fi
 for ac_var in	exec_prefix prefix bindir sbindir libexecdir datarootdir \
 		datadir sysconfdir sharedstatedir localstatedir includedir \
 		oldincludedir docdir infodir htmldir dvidir pdfdir psdir \
-		libdir localedir mandir
+		libdir localedir mandir runstatedir
 do
   eval ac_val=\$$ac_var
   # Remove trailing slashes.
@@ -1520,6 +1532,7 @@ Fine tuning of the installation directories:
   --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
+  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
   --libdir=DIR            object code libraries [EPREFIX/lib]
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
@@ -1613,6 +1626,7 @@ Optional Features:
   --enable-nas-shared     dynamically load NAS audio support [[default=yes]]
   --enable-sndio          support the sndio audio API [[default=yes]]
   --enable-sndio-shared   dynamically load sndio audio support [[default=yes]]
+  --enable-video-fbdev    Enable the framebuffer video backend [[default=yes]]
   --enable-fusionsound    use FusionSound audio driver [[default=no]]
   --enable-fusionsound-shared
                           dynamically load fusionsound audio support
@@ -19245,6 +19259,26 @@ $as_echo "#define SDL_AUDIO_DRIVER_SNDIO 1" >>confdefs.h
     fi
 }
 
+CheckFBDEV()
+{
+	if test x$ARCH = xlinux -a x$enable_video = xyes; then
+		# Check whether --enable-video-fbdev was given.
+if test "${enable_video_fbdev+set}" = set; then :
+  enableval=$enable_video_fbdev;
+else
+  enable_video_fbdev=yes
+fi
+
+		if test x$enable_video_fbdev = xyes; then
+			have_video=yes
+			SUMMARY_video="${SUMMARY_video} fbdev"
+
+$as_echo "#define SDL_VIDEO_DRIVER_FBDEV 1" >>confdefs.h
+
+		fi
+	fi
+}
+
 CheckFusionSound()
 {
     # Check whether --enable-fusionsound was given.
@@ -20177,8 +20211,6 @@ ac_x_header_dirs='
 /usr/local/include/X11R6
 /usr/local/include/X11R5
 /usr/local/include/X11R4
-
-/opt/X11/include
 
 /usr/X386/include
 /usr/x386/include
@@ -24752,6 +24784,7 @@ $as_echo "#define SDL_VIDEO_DRIVER_ANDROID 1" >>confdefs.h
         CheckX11
         CheckDirectFB
         CheckKMSDRM
+        CheckFBDEV
         CheckOpenGLX11
         CheckOpenGLESX11
         CheckVulkan
@@ -24944,6 +24977,11 @@ $as_echo "#define SDL_TIMER_UNIX 1" >>confdefs.h
             SOURCES="$SOURCES $srcdir/src/core/linux/SDL_evdev.c"
             SOURCES="$SOURCES $srcdir/src/core/linux/SDL_evdev_kbd.c"
             SOURCES="$SOURCES $srcdir/src/core/freebsd/SDL_evdev_kbd_freebsd.c"
+        fi
+        # Set up files for the fbdev video driver
+        if test x$enable_video_fbdev = xyes; then
+            SOURCES="$SOURCES $srcdir/src/video/fbdev/*.c"
+            $as_echo "#define SDL_VIDEO_DRIVER_FB 1" >>confdefs.h
         fi
         # Set up other core UNIX files
         SOURCES="$SOURCES $srcdir/src/core/linux/SDL_evdev_capabilities.c"

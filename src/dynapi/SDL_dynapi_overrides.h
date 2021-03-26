@@ -597,3 +597,6 @@
 #define SDL_JoystickCurrentPowerLevel SDL_JoystickCurrentPowerLevel_REAL
 #define SDL_GameControllerFromInstanceID SDL_GameControllerFromInstanceID_REAL
 #define SDL_JoystickFromInstanceID SDL_JoystickFromInstanceID_REAL
+
+/* Backport from SDL 2.0.6 */
+#define SDL_LoadFile_RW SDL_LoadFile_RW_REAL
